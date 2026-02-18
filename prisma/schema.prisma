@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+model User {
+  id             String     @id
+  googleId       String?    @unique @map("google_id")
+  userName       String?    @unique @map("user_name")
+  email          String     @unique
+  hashedPassword String     @map("hashed_password")
+  name           String?    @map("full_name")
+  picture        String?    @map("profile_picture")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @default(now()) @updatedAt @map("updated_at")
+  sessions       Session[]
+  issues         Issues[]
+  comments       Comments[]
+  votes          Votes[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id
+  userId    String   @map("user_id")
+  expiresAt DateTime @map("expires_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Issues {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  category    String
+  location    String?
+  status      String
+  latitude    Float?
+  longitude   Float?
+  imageUrl    String
+  publicId    String
+  upvotes     Int        @default(0)
+  downvotes   Int        @default(0)
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @default(now()) @updatedAt @map("updated_at")
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments    Comments[]
+  votes       Votes[]
+
+  @@map("issues")
+}
+
+model Comments {
+  id        String   @id @default(cuid())
+  issueId   String
+  userId    String
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  issue     Issues   @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
+}
+
+model Votes {
+  id        String   @id @default(cuid())
+  issueId   String
+  userId    String
+  voteType  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  issue     Issues   @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("votes")
+}
