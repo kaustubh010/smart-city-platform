@@ -144,7 +144,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setUser(null);
       toast({ title: "Logged out successfully" });
-      router.push("/login");
+      router.push("/auth/login");
     } catch (error) {
       toast({
         title: "Logout failed",

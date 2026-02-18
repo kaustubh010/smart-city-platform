@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
-import { Navbar } from '@/components/navbar'
+import Navbar from '@/components/navbar'
 import './globals.css'
 import { AuthProvider } from '@/hooks/useAuth'
 
